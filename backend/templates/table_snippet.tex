@@ -1,0 +1,46 @@
+% The Subject Name is dynamic now
+\textbf{Subject: {{SUBJECT}}}
+
+\begin{table}[h!]
+\centering
+\small 
+\renewcommand{\arraystretch}{1.3} 
+
+\begin{tabularx}{\linewidth}{|p{3cm}|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+\hline
+
+% --- Headers ---
+\multirow{15}{*}{\textbf{CO{{CO_ID}}}} & \multicolumn{15}{c|}{\textbf{Program Outcomes}} \\ \cline{2-16}
+& \textbf{PO1} & \textbf{PO2} & \textbf{PO3} & \textbf{PO4} & \textbf{PO5} & \textbf{PO6} & \textbf{PO7} & \textbf{PO8} & \textbf{PO9} & \textbf{PO10} & \textbf{PO11} & \textbf{PO12} & \textbf{PSO1} & \textbf{PSO2} & \textbf{PSO3} \\ \cline{2-16}
+
+% --- Keywords Text (kept static from your file) ---
+ & \scriptsize{Maths} & \scriptsize{Research Literature} & \scriptsize{Public Health} & \scriptsize{Design of Exp} & \scriptsize{Techniques} & \scriptsize{Societal Issues} & \scriptsize{Societal contexts} & \scriptsize{Ethical Principles} & \scriptsize{Individual} & \scriptsize{Comprehend} & \scriptsize{Leader} & \scriptsize{Independent Learning} & \scriptsize{Bio Process} & \scriptsize{Diagnostics} & \scriptsize{Bio Tech} \\ \cline{2-16}
+ & \scriptsize{Science} & \scriptsize{Maths} & \scriptsize{Cultural} & \scriptsize{Analysis} & \scriptsize{Resources} & \scriptsize{Health} & \scriptsize{Environment} & \scriptsize{Ethics} & \scriptsize{Member} & \scriptsize{Reports} & \scriptsize{Project} & \scriptsize{Life-Long} & \scriptsize{Bioinfo} & \scriptsize{Genetic} & \scriptsize{Society} \\ \cline{2-16}
+ & \scriptsize{Fundamentals} & \scriptsize{Natural Sci} & \scriptsize{Societal} & \scriptsize{Interpretation} & \scriptsize{Modern Eng} & \scriptsize{Safety} & \scriptsize{Sustainable} & \scriptsize{Responsibilities} & \scriptsize{Leader} & \scriptsize{Documentation} & \scriptsize{Multidisciplinary} & \scriptsize{Preparation} & \scriptsize{Biopharm} & \scriptsize{Fermentation} & \scriptsize{HR} \\ \cline{2-16}
+ & \scriptsize{Specialization} & \scriptsize{Eng Sciences} & \scriptsize{Environmental} & \scriptsize{Synthesis} & \scriptsize{IT Tools} & \scriptsize{Legal} & \scriptsize{Sustainable} & \scriptsize{Norms} & \scriptsize{Settings} & \scriptsize{Presentations} & \scriptsize{Mgmt} & \scriptsize{Preparation} & \scriptsize{Techniques} & \scriptsize{Skills} & \scriptsize{Solutions} \\ \hline
+
+\textbf{Total Keywords:} & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 & 4 \\ \hline
+
+% --- DYNAMIC DATA ROWS ---
+% CO Statement
+\multirow{4}{*}{\parbox{3cm}{\textbf{CO{{CO_ID}} Statement:} \textit{ {{CO_STATEMENT}} }}} 
+& {{PO1_C1}} & {{PO2_C1}} & {{PO3_C1}} & {{PO4_C1}} & {{PO5_C1}} & {{PO6_C1}} & {{PO7_C1}} & {{PO8_C1}} & {{PO9_C1}} & {{PO10_C1}} & {{PO11_C1}} & {{PO12_C1}} & {{PSO1_C1}} & {{PSO2_C1}} & {{PSO3_C1}} \\ \cline{2-16}
+
+& {{PO1_C2}} & {{PO2_C2}} & {{PO3_C2}} & {{PO4_C2}} & {{PO5_C2}} & {{PO6_C2}} & {{PO7_C2}} & {{PO8_C2}} & {{PO9_C2}} & {{PO10_C2}} & {{PO11_C2}} & {{PO12_C2}} & {{PSO1_C2}} & {{PSO2_C2}} & {{PSO3_C2}} \\ \cline{2-16}
+
+& {{PO1_C3}} & {{PO2_C3}} & {{PO3_C3}} & {{PO4_C3}} & {{PO5_C3}} & {{PO6_C3}} & {{PO7_C3}} & {{PO8_C3}} & {{PO9_C3}} & {{PO10_C3}} & {{PO11_C3}} & {{PO12_C3}} & {{PSO1_C3}} & {{PSO2_C3}} & {{PSO3_C3}} \\ \cline{2-16}
+
+& {{PO1_C4}} & {{PO2_C4}} & {{PO3_C4}} & {{PO4_C4}} & {{PO5_C4}} & {{PO6_C4}} & {{PO7_C4}} & {{PO8_C4}} & {{PO9_C4}} & {{PO10_C4}} & {{PO11_C4}} & {{PO12_C4}} & {{PSO1_C4}} & {{PSO2_C4}} & {{PSO3_C4}} \\ \hline
+
+% Calculations
+\tiny{\textbf{Total Keywords Addressed}} & 
+{{PO1_TOT}} & {{PO2_TOT}} & {{PO3_TOT}} & {{PO4_TOT}} & {{PO5_TOT}} & {{PO6_TOT}} & {{PO7_TOT}} & {{PO8_TOT}} & {{PO9_TOT}} & {{PO10_TOT}} & {{PO11_TOT}} & {{PO12_TOT}} & {{PSO1_TOT}} & {{PSO2_TOT}} & {{PSO3_TOT}} \\ \hline
+
+\textbf{Probability [0-1]} & 
+{{PO1_PROB}} & {{PO2_PROB}} & {{PO3_PROB}} & {{PO4_PROB}} & {{PO5_PROB}} & {{PO6_PROB}} & {{PO7_PROB}} & {{PO8_PROB}} & {{PO9_PROB}} & {{PO10_PROB}} & {{PO11_PROB}} & {{PO12_PROB}} & {{PSO1_PROB}} & {{PSO2_PROB}} & {{PSO3_PROB}} \\ \hline
+
+\textbf{Mapping Strength} & 
+{{PO1_STR}} & {{PO2_STR}} & {{PO3_STR}} & {{PO4_STR}} & {{PO5_STR}} & {{PO6_STR}} & {{PO7_STR}} & {{PO8_STR}} & {{PO9_STR}} & {{PO10_STR}} & {{PO11_STR}} & {{PO12_STR}} & {{PSO1_STR}} & {{PSO2_STR}} & {{PSO3_STR}} \\ \hline
+
+\end{tabularx}
+\end{table}
