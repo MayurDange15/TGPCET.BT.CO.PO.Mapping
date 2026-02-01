@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { BookOpen, FileText, Download, Loader2 } from "lucide-react";
+import { BookOpen, FileText, Loader2, Save, Layers } from "lucide-react";
 import COInputCard from "./components/COInputCard";
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [subjectInfo, setSubjectInfo] = useState({ name: "", code: "" });
+  const [coCount, setCoCount] = useState(5); // Default to 5
 
-  // Initialize 5 COs with empty mappings
+  // Dynamic CO State
   const [cos, setCos] = useState(
     Array(5)
       .fill(null)
@@ -18,7 +19,27 @@ function App() {
       })),
   );
 
-  // Universal Update Handler
+  // Handle Dropdown Change
+  const handleCoCountChange = (e) => {
+    const newCount = parseInt(e.target.value);
+    setCoCount(newCount);
+
+    // Resize the array while preserving existing data
+    setCos((prevCos) => {
+      const newCos = [...prevCos];
+      if (newCount > prevCos.length) {
+        // Add new empty COs
+        for (let i = prevCos.length; i < newCount; i++) {
+          newCos.push({ id: i + 1, statement: "", mappings: {} });
+        }
+      } else {
+        // Remove extra COs
+        newCos.splice(newCount);
+      }
+      return newCos;
+    });
+  };
+
   const updateCOData = (index, field, value) => {
     const newCos = [...cos];
     if (field.includes(".")) {
@@ -36,25 +57,17 @@ function App() {
       const payload = {
         subjectName: subjectInfo.name,
         subjectCode: subjectInfo.code,
-        cos: cos,
+        cos: cos, // This now sends exactly 3, 4, or 5 COs based on selection
       };
 
       // Send to Backend
       const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
       const response = await axios.post(`${API_URL}/generate-pdf`, payload, {
         responseType: "blob",
-        // Increased timeout just in case it takes a while
-        timeout: 30000,
+        timeout: 60000, // 60 seconds timeout for queueing
       });
 
-      // if (response.data.success) {
-      //   alert(
-      //     "Success! Backend received data. (PDF generation coming in Step 4)",
-      //   );
-      //   console.log("Calculated Data from Server:", response.data.data);
-      // }
-
-      // -- STANDARD DOWNLOAD LOGIC --
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -63,19 +76,14 @@ function App() {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      alert("PDF Downloaded successfully!");
     } catch (error) {
-      console.error("Generation Error:", error);
-
-      // -- IDM DETECTION --
-      // If error is "Network Error" but the backend is actually running,
-      // it usually means IDM snatched the file.
-      if (error.code === "ERR_NETWORK" || error.message === "Network Error") {
+      console.error(error);
+      if (error.response && error.response.status === 429) {
         alert(
-          "Download started! \n(Note: If you use IDM, check your IDM list. It likely captured the download automatically.)",
+          "Server is busy processing other requests. Please try again in 10 seconds.",
         );
       } else {
-        alert("Error generating PDF. Please check the backend console.");
+        alert("Error generating PDF. Check console.");
       }
     } finally {
       setLoading(false);
@@ -85,20 +93,20 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 font-sans text-gray-800">
       <div className="max-w-5xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-12">
+        {/* Header */}
+        <div className="text-center mb-10">
           <h1 className="text-4xl font-extrabold text-gray-900 mb-2 flex items-center justify-center gap-3">
             <BookOpen className="text-blue-600" size={40} />
             CO-PO Mapper
           </h1>
-          <p className="text-gray-500">
-            Automated Accreditation Documentation System
-          </p>
+          <h2 className="text-2xl font-extrabold text-gray-500 mb-2 flex items-center justify-center gap-3">
+            Department of Biotechnology
+          </h2>
         </div>
 
-        {/* Subject Info Card */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-10 flex gap-6 items-end">
-          <div className="flex-grow">
+        {/* Controls Card */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-8 grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+          <div className="md:col-span-5">
             <label className="block text-sm font-bold text-gray-700 mb-1">
               Subject Name
             </label>
@@ -107,13 +115,12 @@ function App() {
               placeholder="e.g. Bio Reaction Engineering"
               className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               value={subjectInfo.name}
-              required
               onChange={(e) =>
                 setSubjectInfo({ ...subjectInfo, name: e.target.value })
               }
             />
           </div>
-          <div className="w-1/3">
+          <div className="md:col-span-4">
             <label className="block text-sm font-bold text-gray-700 mb-1">
               Subject Code
             </label>
@@ -122,45 +129,53 @@ function App() {
               placeholder="e.g. BBT33602"
               className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               value={subjectInfo.code}
-              required
               onChange={(e) =>
                 setSubjectInfo({ ...subjectInfo, code: e.target.value })
               }
             />
           </div>
+          <div className="md:col-span-3">
+            <label className="block text-sm font-bold text-gray-700 mb-1 flex items-center gap-2">
+              <Layers size={16} /> Number of COs
+            </label>
+            <select
+              value={coCount}
+              onChange={handleCoCountChange}
+              className="w-full p-3 bg-blue-50 border border-blue-200 text-blue-800 font-bold rounded-lg focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer"
+            >
+              {[1, 2, 3, 4, 5].map((num) => (
+                <option key={num} value={num}>
+                  {num} Units
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* The 5 CO Cards */}
-        {cos.map((co, index) => (
-          <COInputCard
-            key={index}
-            coIndex={index}
-            data={co}
-            updateData={updateCOData}
-          />
-        ))}
+        {/* CO Cards Loop */}
+        <div className="space-y-6">
+          {cos.map((co, index) => (
+            <COInputCard
+              key={index} // Note: Ideally use a unique ID, but index works for simple lists
+              coIndex={index}
+              data={co}
+              updateData={updateCOData}
+            />
+          ))}
+        </div>
 
         {/* Action Bar */}
-        <div className="sticky bottom-6 bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-gray-200 flex justify-between items-center">
+        <div className="sticky bottom-6 mt-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-gray-200 flex justify-between items-center z-50">
           <div className="text-sm text-gray-500">
-            <strong>{5} Course Outcomes</strong> configured
+            Generating for <strong>{coCount} Units</strong>
           </div>
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50 shadow-lg shadow-blue-200"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50 shadow-lg shadow-blue-200"
           >
-            {loading ? (
-              <>
-                <Loader2 className="animate-spin mr-2" />
-                Generating PDF... (Please Wait)
-              </>
-            ) : (
-              <>
-                <FileText className="mr-2" />
-                Generate PDF Report
-              </>
-            )}
+            {loading ? <Loader2 className="animate-spin" /> : <FileText />}
+            {loading ? "Processing..." : "Generate PDF Report"}
           </button>
         </div>
       </div>

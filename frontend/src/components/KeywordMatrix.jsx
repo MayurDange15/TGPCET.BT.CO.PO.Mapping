@@ -140,7 +140,7 @@ const KeywordMatrix = ({ mappings, onToggle }) => {
               >
                 <span className="font-bold text-gray-700 text-sm">{po.id}</span>
                 <div
-                  className={`text-[10px] px-2 py-0.5 rounded-full border ${color} font-bold uppercase`}
+                  className={`text-[12px] px-2 py-0.5 rounded-full border ${color} font-bold uppercase`}
                 >
                   Val: {strength}
                 </div>
@@ -158,7 +158,7 @@ const KeywordMatrix = ({ mappings, onToggle }) => {
                       key={kIndex}
                       onClick={() => onToggle(po.id, kIndex)}
                       className={`
-                        w-full text-left text-[10px] px-2 py-2 rounded-md border transition-all duration-200 flex items-center justify-between group h-auto min-h-[32px]
+                        w-full text-left text-[12px] px-2 py-2 rounded-md border transition-all duration-200 flex items-center justify-between group h-auto min-h-[32px]
                         ${
                           isSelected
                             ? "bg-blue-600 border-blue-600 text-white shadow-sm"
