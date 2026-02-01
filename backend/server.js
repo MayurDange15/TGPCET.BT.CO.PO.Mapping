@@ -226,11 +226,10 @@ const escapeLatex = (str) => {
 };
 
 const calculateStrength = (mappings) => {
-  if (!mappings) return 0;
-  const prob = mappings.length / 4;
-  if (prob == 1.0) return 3;
-  if (prob == 0.75) return 2;
-  if (prob == 0.5) return 1;
+  const count = mappings ? mappings.length : 0;
+  if (count === 4) return 3;
+  if (count === 3) return 2;
+  if (count === 2) return 1;
   return 0;
 };
 
@@ -317,40 +316,35 @@ const generatePDF = (req, res) => {
 
     // 2. GENERATE AVERAGE TABLE
     let avgTable = averageSnippet;
+    let summaryRows = "";
 
-    // A. Fill individual cells (up to 5 or whatever the max in snippet is)
-    // NOTE: If you selected 3 COs, we need to hide rows for CO4/CO5 or leave them blank
-    // A better approach for variable COs in LaTeX is to construct the rows dynamically,
-    // but for now, we will fill unused rows with "-"
+    // A. Build Dynamic Rows for Summary Table
+    cos.forEach((co, index) => {
+      const safeStatement = escapeLatex(co.statement) || `Course Outcome ${index + 1}`;
+      let row = `\\textbf{${safeStatement}}`;
 
-    for (let i = 0; i < 5; i++) {
-      // Assuming template has 5 rows max
-      const coIndex = i;
       pos.forEach((po) => {
-        if (coIndex < cos.length) {
-          // This CO exists
-          const val = strengthMatrix[po][coIndex];
-          avgTable = avgTable.replace(
-            `{{CO${coIndex + 1}_${po}}}`,
-            val === 0 ? "-" : val,
-          );
-        } else {
-          // This CO does not exist (e.g. user selected 3 COs)
-          avgTable = avgTable.replace(`{{CO${coIndex + 1}_${po}}}`, "-");
-        }
+        const strength = strengthMatrix[po][index];
+        row += ` & ${strength}`;
       });
-    }
+
+      row += " \\\\ \\hline\n";
+      summaryRows += row;
+    });
+
+    avgTable = avgTable.replace("<<SUMMARY_ROWS>>", summaryRows);
 
     // B. Calculate Dynamic Average
     pos.forEach((po) => {
-      const values = strengthMatrix[po]; // This array only has length equal to numCOs (e.g., 3)
+      const values = strengthMatrix[po];
       const total = values.reduce((sum, val) => sum + val, 0);
 
-      // DIVIDE BY ACTUAL CO COUNT (Dynamic)
+      // DIVIDE BY ACTUAL CO COUNT
       const divisor = cos.length > 0 ? cos.length : 1;
 
       const average = (total / divisor).toFixed(1);
-      const displayAvg = average === "0.0" ? "-" : average;
+      // As per user: "Go with 0" for strength 0/average 0
+      const displayAvg = average;
 
       avgTable = avgTable.replace(`{{AVG_${po}}}`, displayAvg);
     });

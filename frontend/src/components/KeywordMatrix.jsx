@@ -99,21 +99,23 @@ const KeywordMatrix = ({ mappings, onToggle }) => {
   const getScore = (poId) => {
     const selected = mappings[poId] || [];
     const count = selected.length;
-    const prob = count / 4;
 
     let strength = 0;
     let color = "bg-gray-100 text-gray-400 border-gray-200";
 
-    if (prob == 1.0) {
+    if (count === 4) {
       strength = 3;
       color = "bg-green-100 text-green-700 border-green-200";
-    } else if (prob == 0.75) {
+    } else if (count === 3) {
       strength = 2;
       color = "bg-yellow-100 text-yellow-700 border-yellow-200";
-    } else if (prob == 0.5) {
+    } else if (count === 2) {
       strength = 1;
       color = "bg-blue-50 text-blue-600 border-blue-100";
-    } else if (prob == 0.25) {
+    } else if (count === 1) {
+      strength = 0;
+      color = "bg-gray-100 text-gray-400 border-gray-200";
+    } else {
       strength = 0;
       color = "bg-gray-100 text-gray-400 border-gray-200";
     }
