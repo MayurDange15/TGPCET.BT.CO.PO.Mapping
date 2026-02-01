@@ -30,7 +30,10 @@
 \fancyhf{} 
 \fancyhead[C]{%
 % NOTE: Ensure 'Logo.with.Department.png' is inside the templates folder!
-  \includegraphics[height=2.65cm, width=26.5cm]{Logo.with.Department.png}%
+  \includegraphics[height=2.65cm, width=26.5cm]{logo2.png} \\%
+  \Large \textbf{Department of Biotechnology} \\
+  \vspace{0.2cm} % Add a little space
+  \Large \textbf{Subject: {{SUBJECT}}} %
 }
 \renewcommand{\headrulewidth}{0pt} 
 
@@ -40,8 +43,7 @@
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 
 \begin{document}
-
 % This is where Node.js will inject the 5 tables
-<<INSERT_TABLES_HERE>>
+% <<INSERT_TABLES_HERE>>
 
 \end{document}

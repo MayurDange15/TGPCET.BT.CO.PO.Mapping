@@ -1,26 +1,101 @@
 import React from "react";
 import { Check } from "lucide-react";
 
-const POS = [
-  { id: "PO1", title: "Engineering Knowledge" },
-  { id: "PO2", title: "Problem Analysis" },
-  { id: "PO3", title: "Design/Development of Solutions" },
-  { id: "PO4", title: "Conduct Investigations" },
-  { id: "PO5", title: "Modern Tool Usage" },
-  { id: "PO6", title: "The Engineer and Society" },
-  { id: "PO7", title: "Environment and Sustainability" },
-  { id: "PO8", title: "Ethics" },
-  { id: "PO9", title: "Individual and Team Work" },
-  { id: "PO10", title: "Communication" },
-  { id: "PO11", title: "Project Management and Finance" },
-  { id: "PO12", title: "Life-long Learning" },
-  { id: "PSO1", title: "Program Specific Outcome 1" },
-  { id: "PSO2", title: "Program Specific Outcome 2" },
-  { id: "PSO3", title: "Program Specific Outcome 3" },
-];
+// 1. The Dictionary of Keywords (Derived from your LaTeX file)
+const PO_KEYWORDS = {
+  PO1: [
+    "Maths",
+    "Science",
+    "Engineering Fundamentals",
+    "Engineering Specialization",
+  ],
+  PO2: [
+    "Research Literature",
+    "Maths",
+    "Natural Sciences",
+    "Engineering Sciences",
+  ],
+  PO3: [
+    "Public Health and Safety Considerations",
+    "Cultural Considerations",
+    "Societal Considerations",
+    "Environmental Considerations",
+  ],
+  PO4: [
+    "Design of Experiments",
+    "Analysis of Data",
+    "Interpretation of Data",
+    "Synthesis of the Information",
+  ],
+  PO5: [
+    "Apply Appropriate Techniques",
+    "Create Resources",
+    "Modern Engineering",
+    "IT Tools",
+  ],
+  PO6: [
+    "Societal Issues",
+    "Health Issues",
+    "Safety Issues",
+    "Legal or Cultural Issues",
+  ],
+  PO7: [
+    "Societal Contexts",
+    "Environment Contexts",
+    "Knowledge for Sustainable Development",
+    "Need for Sustainable Development",
+  ],
+  PO8: [
+    "Ethical Principals",
+    "Professional Ethics",
+    "Responsibilities of Engineering Practice",
+    "Norms of Engineering Practice",
+  ],
+  PO9: [
+    "Function as Individual",
+    "Function as Member",
+    "Function as Leader",
+    "Multidisciplinary Settings",
+  ],
+  PO10: [
+    "Able to Comprehend",
+    "Write Effective Reports",
+    "Design Documentation",
+    "Make Effective Presentations",
+  ],
+  PO11: [
+    "Leader in Team",
+    "Project",
+    "Multidisciplinary",
+    "Engineering and Management Principle",
+  ],
+  PO12: [
+    "Need of Independent Learning",
+    "Need of Life-Long Learning",
+    "Preparation of Independent Learning",
+    "Preparation of Life-Long Learning",
+  ],
+  PSO1: [
+    "Bio Process Engineering",
+    "Bioinformatics",
+    "Biopharmaceuticals",
+    "Recent Techniques",
+  ],
+  PSO2: [
+    "Diagnostics",
+    "Genetic Engineering",
+    "Fermentation Technology",
+    "Proficiency and Skills",
+  ],
+  PSO3: [
+    "Biotechnology Engineering",
+    "Society and People",
+    "Productive HR",
+    "Solutions",
+  ],
+};
 
 const KeywordMatrix = ({ mappings, onToggle }) => {
-  // Helper to calculate score for a single PO
   const getScore = (poId) => {
     const selected = mappings[poId] || [];
     const count = selected.length;
@@ -29,19 +104,24 @@ const KeywordMatrix = ({ mappings, onToggle }) => {
     let strength = 0;
     let color = "bg-gray-100 text-gray-400 border-gray-200";
 
-    if (prob >= 0.7) {
+    if (prob == 1.0) {
       strength = 3;
       color = "bg-green-100 text-green-700 border-green-200";
-    } else if (prob >= 0.4) {
+    } else if (prob == 0.75) {
       strength = 2;
       color = "bg-yellow-100 text-yellow-700 border-yellow-200";
-    } else if (prob > 0) {
+    } else if (prob == 0.5) {
       strength = 1;
       color = "bg-blue-50 text-blue-600 border-blue-100";
+    } else if (prob == 0.25) {
+      strength = 0;
+      color = "bg-gray-100 text-gray-400 border-gray-200";
     }
 
     return { count, strength, color };
   };
+
+  const POS = Object.keys(PO_KEYWORDS).map((key) => ({ id: key }));
 
   return (
     <div className="overflow-x-auto pb-4 scrollbar-hide">
@@ -68,7 +148,9 @@ const KeywordMatrix = ({ mappings, onToggle }) => {
 
               {/* Keyword Buttons */}
               <div className="p-2 space-y-1.5 bg-gray-50/30 flex-grow">
-                {[1, 2, 3, 4].map((kIndex) => {
+                {[0, 1, 2, 3].map((i) => {
+                  const kIndex = i + 1; // 1-based index for logic
+                  const label = PO_KEYWORDS[po.id][i]; // Text label
                   const isSelected = (mappings[po.id] || []).includes(kIndex);
 
                   return (
@@ -76,7 +158,7 @@ const KeywordMatrix = ({ mappings, onToggle }) => {
                       key={kIndex}
                       onClick={() => onToggle(po.id, kIndex)}
                       className={`
-                        w-full text-left text-[11px] px-3 py-1.5 rounded-md border transition-all duration-200 flex items-center justify-between
+                        w-full text-left text-[10px] px-2 py-2 rounded-md border transition-all duration-200 flex items-center justify-between group h-auto min-h-[32px]
                         ${
                           isSelected
                             ? "bg-blue-600 border-blue-600 text-white shadow-sm"
@@ -84,8 +166,14 @@ const KeywordMatrix = ({ mappings, onToggle }) => {
                         }
                       `}
                     >
-                      <span>Keyword {kIndex}</span>
-                      {isSelected && <Check size={10} strokeWidth={3} />}
+                      <span className="leading-tight">{label}</span>
+                      {isSelected && (
+                        <Check
+                          size={12}
+                          strokeWidth={3}
+                          className="flex-shrink-0 ml-1"
+                        />
+                      )}
                     </button>
                   );
                 })}

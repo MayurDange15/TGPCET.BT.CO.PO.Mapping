@@ -40,15 +40,12 @@ function App() {
       };
 
       // Send to Backend
-      const response = await axios.post(
-        "http://localhost:5000/generate-pdf",
-        payload,
-        {
-          responseType: "blob",
-          // Increased timeout just in case it takes a while
-          timeout: 30000,
-        },
-      );
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const response = await axios.post(`${API_URL}/generate-pdf`, payload, {
+        responseType: "blob",
+        // Increased timeout just in case it takes a while
+        timeout: 30000,
+      });
 
       // if (response.data.success) {
       //   alert(
@@ -110,6 +107,7 @@ function App() {
               placeholder="e.g. Bio Reaction Engineering"
               className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               value={subjectInfo.name}
+              required
               onChange={(e) =>
                 setSubjectInfo({ ...subjectInfo, name: e.target.value })
               }
@@ -124,6 +122,7 @@ function App() {
               placeholder="e.g. BBT33602"
               className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               value={subjectInfo.code}
+              required
               onChange={(e) =>
                 setSubjectInfo({ ...subjectInfo, code: e.target.value })
               }

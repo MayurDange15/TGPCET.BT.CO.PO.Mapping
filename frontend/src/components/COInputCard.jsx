@@ -38,6 +38,7 @@ const COInputCard = ({ coIndex, data, updateData }) => {
           maxLength={60}
           placeholder="Enter the course outcome description here..."
           value={data.statement}
+          required
           onChange={(e) => updateData(coIndex, "statement", e.target.value)}
         />
       </div>
